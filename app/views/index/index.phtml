@@ -1,0 +1,45 @@
+<br />
+<div class="container">
+<div class="row center">
+  <div class="col s3">
+  </div>
+  <div class="col s12 m6">
+    <div class="card grey lighten-5">
+      <form id="login-content">
+        <div class="card-content">
+          <i class="large material-icons">account_circle</i>
+            <div class="row">
+              <div class="input-field">
+                <i class="material-icons prefix">person</i>
+                <input class="validate" type="text" name="userReg" id="userReg" required="" />
+                <label for="userReg">Usuario</label>
+              </div>
+              <div class="input-field">
+                <i class="material-icons prefix">lock</i>
+                <input class="validate" type="password" name="passwordReg" id="passwordReg" required="" />
+                <label for="passwordReg">Contraseña</label>
+              </div>
+            </div>
+            <div class="card-action">
+              <button class="waves-effect waves-light btn btn-large blue-grey darken-3" id="login-start">ingresar</button>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col s3">
+  </div>
+</div>
+<script>
+$("#login-start").click(function()
+{
+  if(input("userReg") && input("passwordReg"))
+  {
+    login("login-content", "<?php echo $this->url->get('Index/login')?>", "<?php echo $this->url->get('busqueda')?>");
+  }
+  else
+  {
+    alert('Se requieren todos los campos');
+  }
+});
+</script>

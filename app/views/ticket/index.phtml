@@ -1,0 +1,49 @@
+<style type="text/css">
+  #container-ticket 
+  { 
+    position: absolute;
+    width: 250px;
+    max-width: 250px;
+    font-size: 11.5px;
+    color: #202020;
+    font-family: 'Times New Roman';
+  }
+
+  #ticket-title
+  {
+    text-align: center;
+    font-size: 12px;
+  }
+
+  @page 
+  {
+    size:  auto;
+    margin: 6mm;
+  }
+</style>
+
+<div id="container-ticket">
+  <div id="ticket-title">
+    <p>Crown Paradise Club - Cancun</p>
+    <p><?php echo $ticket[0]->nombre_restaurante; ?></p>
+  </div>
+  <hr>
+  <p># Confirm: <?php echo $ticket[0]->getId(); ?></p>
+  <p>Fecha/Date: <?php echo $ticket[0]->getFecha(); ?></p>
+  <p>Cuarto/Room: <?php echo $ticket[0]->getCuarto(); ?></p>
+  <p>Nombre/Name: <?php echo $ticket[0]->getNombre(); ?></p>
+  <p>Hora/Time: <?php echo $ticket[0]->getHora(); ?></p>
+  <p>Mesa/Table: <?php echo $ticket[0]->getIdMesa(); ?></p>
+  <p>Oper/User: <?php echo $ticket[0]->getNombreOpe(); ?></p>
+  <p>Notas: <?php echo $ticket[0]->getComentarios(); ?></p>
+  <hr>
+  <p>TOLERANCIA DE ESPERA 5 MINUTOS MAXIMO</P>
+  <p>CODIGO DE VESTIR CASUAL: PLAYERA TIPO POLO ZAPATO CERRADO Y BERMUDA DE VESTIR</p>
+  <hr>
+  <p>MAXIMUM WAITING TIME OF 5 MINUTES</p>
+  <P>THE DRESS CODE IS CASUAL: WEAR A POLO TIPE SHIRT, CLOSED TOE SHOES AND DRESS BERMUDA</P> 
+</div>
+<script>
+  window.print();
+  close();
+</script>

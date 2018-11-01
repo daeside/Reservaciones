@@ -1,0 +1,132 @@
+<div class="row z-depth-1 grey lighten-5">
+  <form class="col s12" id="opn-cls-content">
+    <div class="row">
+      <h5 class="center-align">Cerrar o Abrir Restaurante</h5>
+    </div>
+    <div class="row">
+      <div class="input-field col s3">
+        <input type="hidden">
+      </div>
+      <div class="input-field col s6">
+        <select name="resOpenClos" id="resOpenClos" class="browser-default">
+          <option value="" disabled="" selected="">Punto</option>
+        </select>
+      </div>
+      <div class="input-field col s3">
+        <input type="hidden">
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input name="closFecha" id="closFecha" type="text" class="datepicker" readonly>
+        <label for="closFecha">Desde</label>
+      </div> 
+      <div class="input-field col s6">
+        <input name="openFecha" id="openFecha" type="text" class="datepicker" readonly>
+        <label for="openFecha">Hasta</label>
+      </div> 
+    </div>
+    <div class="row">
+      <div class="input-field col s4">
+        <input type="hidden">
+      </div>
+      <div class="input-field col s4">
+        <input type="hidden" name="opnCls" id="opnCls">
+      </div>
+      <div class="input-field col s4">
+        <input type="hidden">
+      </div>
+    </div>
+    <div class="row center-align">
+      <a class="waves-effect waves-light btn btn-large blue-grey darken-3" id="btn-close-open" href="#"><i class="material-icons">lock_outline</i></a>
+    </div>
+    <div id="tabla-cierres" class="table-wrapper hide">
+      <div class="col s12">
+        <table id="data-table-cierre">
+          <thead>
+            <tr>
+              <th>RESTAURANTE</th>
+              <th>CERRADO <br>DESDE</th>
+              <th>ABIERTO <br>HASTA</th>
+              <th>ABRIR</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>RESTAURANTE</th>
+              <th>CERRADO <br>DESDE</th>
+              <th>ABIERTO <br>HASTA</th>
+              <th>ABRIR</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+$(document).ready(function()
+  {
+     $('select').formSelect();
+     calendario("<?php echo date('Y-m-d', strtotime(date('Y-m-d')."+ 1 days"));?>");
+     crearSelect("<?php echo $this->url->get('reservar/selectAjax')?>" ,'resOpenClos');
+  });
+</script>
+<script>
+$(document).ready(function()
+  {
+     $("#btn-close-open").click(function()
+     {
+       $('#opnCls').attr('value', 2);
+       if(select("resOpenClos") && input("closFecha") && input("openFecha"))
+       {
+         send("opn-cls-content", "<?php echo $this->url->get('Restaurante/openClose')?>", "Cerrado Correctamente", "<?php echo $this->url->get('restaurante')?>");
+       }
+       else
+       {
+         alert("Se requieren todos los campos");
+       }
+     });
+  });
+</script>
+<script>
+  $(document).ready(function()
+  {
+      $("#resOpenClos").change(function()
+      {
+        $('#data-table-cierre').dataTable().fnDestroy();
+        var datos = [{"data":"nombre"},{"data":"cierre"},{"data":"apertura"},{"data":"abrir"}];
+        var res = $('#resOpenClos').val();
+
+        if(select("resOpenClos"))
+        {
+          hideshow("tabla-cierres");
+          tabla("<?php echo $this->url->get('restaurante/estatus/')?>" + res, "data-table-cierre", "<?php echo $this->url->get('json/Spanish.json')?>", datos);
+        }
+        else
+        {
+          alert('Debe seleccionar Punto, Fecha de Cierre y Fecha de Apertura');
+          showhide("tabla-cierres");
+        }
+      });
+  });
+</script>
+<script>
+function reabrir(cierre, apertura)
+{
+  event.preventDefault();
+  $('#opnCls').attr('value', 1);
+  $('#closFecha').attr('value', cierre);
+  $('#openFecha').attr('value', apertura);
+  var mensaje = confirm("¿Abrir Restaurante?");
+
+  if (mensaje)
+  {
+    send("opn-cls-content", "<?php echo $this->url->get('Restaurante/openClose')?>", "Abierto Correctamente", "<?php echo $this->url->get('restaurante')?>");
+  }
+}
+</script>
+
+

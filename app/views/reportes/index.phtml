@@ -1,0 +1,138 @@
+<div class="row z-depth-1 grey lighten-5">
+  <form class="col s12">
+    <div class="row">
+      <h5 class="center-align">Generar Lista de Reservaciones</h5>
+    </div>
+    <div class="row">
+      <div class="input-field col s3">
+        <input type="hidden">
+      </div>
+      <div class="input-field col s6">
+        <select name="reporRes" id="reporRes" class="browser-default">
+          <option value="" disabled="" selected="">Punto</option>
+        </select>
+      </div>
+      <div class="input-field col s3">
+        <input type="hidden">
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s5">
+        <input type="hidden">
+      </div>
+      <div class="input-field col s4">
+        <p>
+          <label>
+            <input name="reporTipo" value="1" type="radio" id="reporDia" checked  />
+            <span>Hoy</span>
+          </label>
+        </p>
+        <p>
+          <label>
+            <input name="reporTipo" value="2" type="radio" id="reporHisto"  />
+            <span>Historico</span>
+          </label>
+        </p>
+      </div>
+      <div class="input-field col s3">
+        <input type="hidden" name="idrepor" id="idrepor">
+      </div>
+    </div>
+    <div class="row center-align">
+      <a class="waves-effect waves-light btn btn-large blue-grey darken-3" id="reportes-gen" href="#"><i class="material-icons">done</i></a>
+    </div>
+    <div id="tabla-reportes" class="table-wrapper hide">
+      <div class="col s12">
+        <table id="data-table-des">
+          <thead>
+            <tr>
+              <th>NUMERO DE<br> RESERVA</th>
+              <th>HORA DE<br> RESERVA</th>
+              <th>FECHA <br>RESERVADA</th>
+              <th>MESA</th>
+              <th>CAPACIDAD</th>
+              <th>HABITACION</th>
+              <th>FOLIO</th>
+              <th>NOMBRE DE<br>HUESPED</th>
+              <th>NOTAS</th>
+              <th>OPERADOR</th>
+              <th>FECHA DE <br>RESERVACION</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>NUMERO DE<br> RESERVA</th>
+              <th>HORA DE<br> RESERVA</th>
+              <th>FECHA <br>RESERVADA</th>
+              <th>MESA</th>
+              <th>CAPACIDAD</th>
+              <th>HABITACION</th>
+              <th>FOLIO</th>
+              <th>NOMBRE DE<br>HUESPED</th>
+              <th>NOTAS</th>
+              <th>OPERADOR</th>
+              <th>FECHA DE <br>RESERVACION</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="row center-align">
+        <a class="waves-effect waves-light btn btn-large green darken-3" id="excel-gen" href="#"><i class="material-icons">insert_drive_file</i></a>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+$(document).ready(function()
+  {
+    $('select').formSelect();
+    crearSelect("<?php echo $this->url->get('reservar/selectAjax')?>" ,'reporRes');
+  });
+</script>
+<script>
+  $(document).ready(function()
+  {
+    $("#reportes-gen").click(function () 
+    {
+      $('#data-table-des').dataTable().fnDestroy();
+      var res = $('#reporRes').val(); 
+      var fech = $('input:radio[name=reporTipo]:checked').val();
+      var cadena = res + '/' + fech;
+      var datos = [{"data":"reserva"},{"data":"hora"},{"data":"fecha"},{"data":"id"},{"data":"capacidad"},{"data":"cuarto"},{"data":"folio"},{"data":"nombre"},{"data":"notas"},{"data":"operador"},{"data":"fechareserva"}];
+
+      if(input("reporRes"))
+      {
+       hideshow("tabla-reportes");
+       tabla("<?php echo $this->url->get('reportes/crearRepor/')?>" + cadena, "data-table-des", "<?php echo $this->url->get('json/Spanish.json')?>", datos);
+      }
+      else
+      {
+        alert('Debe seleccionar el restaurante');
+      }
+    });
+  });
+</script>
+<script>
+  $(document).ready(function()
+  {
+    $("#excel-gen").click(function () 
+    {
+      var res = $('#reporRes').val(); 
+      var fech = $('input:radio[name=reporTipo]:checked').val();
+      var cadena = res + '/' + fech;
+
+      if(input("reporRes"))
+      {
+        location.href = "<?php echo $this->url->get('reportes/crearExcel/')?>" + cadena;
+      }
+      else
+      {
+        alert('Debe seleccionar el restaurante');
+      }
+    });
+  });
+</script>
+
+

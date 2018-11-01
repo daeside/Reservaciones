@@ -1,0 +1,42 @@
+<div class="row z-depth-1 grey lighten-5">
+  <form class="col s12" id="changepsw-content">
+    <div class="row">
+      <h5 class="center-align">Cambiar Contraseña Para <?php echo $this->session->get("user"); ?></h5>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input name="usrChangePassword" id="usrChangePassword" type="password" class="validate">
+        <label for="usrChangePassword">Nueva contraseña</label>
+      </div>
+      <div class="input-field col s6">
+        <input name="usrChangePasswordCon" id="usrChangePasswordCon" type="password" class="validate">
+        <label for="usrChangePasswordCon">Confirmar contraseña</label>
+      </div>
+    </div>
+    <div class="row center-align">
+      <a class="waves-effect waves-light btn btn-large blue-grey darken-3" id="usuarios-change" href="#"><i class="material-icons">done</i></a>
+    </div>
+  </form>
+</div>
+<script>
+  $("#usuarios-change").click(function()
+  {
+    if(input("usrChangePassword") && input("usrChangePasswordCon"))
+    {
+      if(password("usrChangePassword", "usrChangePasswordCon"))
+      {
+        send("changepsw-content", "<?php echo $this->url->get('Usuarios/changePass')?>", "Se modifico correctamente", "<?php echo $this->url->get('index/logout')?>");
+      }
+      else
+      {
+        alert('Las contraseñas no coinciden');
+      }
+    }
+    else
+    {
+      alert('Se requieren todos los campos');
+    }
+  });
+</script>
+
+

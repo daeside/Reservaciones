@@ -1,0 +1,195 @@
+<?php date_default_timezone_set("America/Cancun");?>
+<div class="row z-depth-1 grey lighten-5">
+  <form class="col s12" id="reser-form">
+    <div class="row">
+      <h5 class="center-align">Nueva Reservación</h5>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input name="resFecha" id="resFecha" type="text" class="datepicker" readonly>
+        <label for="reFecha">Fecha</label>
+      </div> 
+      <div class="input-field col s6">
+        <select name="tipoHues" id="tipoHues" class="browser-default">
+          <option value="" disabled="" selected="">Tipo de Reservacion</option>
+          <option value="1">Por Habitacion</option>
+          <option value="2">Por Folio</option>
+          <option value="3">GSH</option>
+          <option value="4">Gerencia</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <select name="resList" id="resList" class="browser-default">
+          <option value="" disabled="" selected="">Punto</option>
+        </select>
+      </div>
+      <div class="input-field col s6">
+        <select name="horaList" id="horaList" class="browser-default">
+          <option value="" disabled="" selected="">Hora</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6" id="container-nombre">
+        <input name="resNombre" id="resNombre" type="text" class="validate">
+        <label for="resNombre">Nombre</label>
+      </div>
+      <div class="input-field col s6" id="container-cuarto">
+        <input name="resCuarto" id="resCuarto" type="number" class="validate">
+        <label for="resCuarto">Habitacion</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6" id="container-folio">
+        <input name="resFolio" id="resFolio" type="number" class="validate">
+        <label for="resFolio">Folio</label>
+      </div>  
+      <div class="input-field col s6">
+        <textarea name="resNotas" id="resNotas" class="materialize-textarea"></textarea>
+        <label for="resNotas">Notas</label>
+      </div>
+    </div>
+    <div class="row center-align">
+    <input type="hidden" name="id-mesa" id="id-mesa">
+    </div>
+    <div class="row center-align">
+      <a class="waves-effect waves-light btn btn-large blue-grey darken-3" id="tabla-gen" href="#"><i class="material-icons">done</i></a>
+    </div>
+    <div id="tabla-reserva" class="table-wrapper hide">
+      <div class="col s12">
+        <table id="data-table-dis">
+          <thead>
+            <tr>
+              <th>MESA</th>
+              <th>CAPACIDAD</th>
+              <th>ESTATUS</th>
+              <th>HABITACION</th>
+              <th>NOMBRE DE<br>HUESPED</th>
+              <th>NOTAS</th>
+              <th>FECHA DE <br>RESERVA</th>
+              <th>HORA DE <br>RESERVA</th>
+              <th>RESERVAR</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>MESA</th>
+              <th>CAPACIDAD</th>
+              <th>ESTATUS</th>
+              <th>HABITACION</th>
+              <th>NOMBRE DE<br>HUESPED</th>
+              <th>NOTAS</th>
+              <th>FECHA DE <br>RESERVA</th>
+              <th>HORA DE <br>RESERVA</th>
+              <th>RESERVAR</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+$(document).ready(function()
+  {
+    $('select').formSelect();
+    calendario("<?php echo date('Y-m-d', strtotime(date('Y-m-d')."+ 1 days"));?>");
+  });
+</script>
+<script>
+  $(document).ready(function()
+  {
+    $("#resFecha").change(function()
+     {
+      if(input("resFecha"))
+      {
+        var fech = $("#resFecha").val();
+        crearSelect("<?php echo $this->url->get('reservar/selectFech/')?>" + fech ,'resList');
+      }
+     });
+  });
+</script>
+<script>
+  $(document).ready(function()
+  {
+    $("#resList").change(function()
+     {
+       var tipo = $("#resList").val();
+       selectHora("<?php echo $this->url->get('reservar/horaSelect/')?>" + tipo ,'horaList');
+     });
+  });
+</script>
+<script>
+ $(document).ready(function()
+ {
+   $("#tabla-gen").click(function()
+   {
+     $('#data-table-dis').dataTable().fnDestroy();
+     var res = $('#resList').val(); 
+     var fech = $('#resFecha').val();
+     var hor = $('#horaList').val();
+     var cadena = res + '/' + fech + '/' + hor;
+     var datos = [{"data":"id"},{"data":"capacidad"},{"data":"estatus"},{"data":"cuarto"},{"data":"nombre"},{"data":"notas"},{"data":"fecha"},{"data":"hora"},{"data":"opcion"}];
+
+     if(input("resList") && input("resFecha") && input("horaList") && input("tipoHues"))
+     {
+      hideshow("tabla-reserva");
+      tabla("<?php echo $this->url->get('reservar/crearTab/')?>" + cadena, "data-table-dis", "<?php echo $this->url->get('json/Spanish.json')?>", datos);
+     }
+     else
+     {
+       alert('Debe seleccionar Fecha, Punto, Hora y Tipo de Reservacion');
+       showhide("tabla-reserva");
+     }
+   });
+});
+</script>
+<script>
+$(document).ready(function()
+  {
+    $("#tipoHues").change(function()
+     {
+       var dato = $('#tipoHues').val();
+       var nombresel = $('select[name="tipoHues"] option:selected').text();
+
+       tipoReserva(dato, nombresel, 'resFolio', 'resCuarto', 'resNombre', 'container-folio', 'container-cuarto', 'container-nombre');
+     });
+  });
+</script>
+<script>
+function reserva(id)
+{
+  event.preventDefault();
+  $('#id-mesa').attr('value', id);
+    
+  if(input("resFecha") && input("resNotas") && input("resNombre") && select("resList") && select("horaList"))
+  {
+    $.ajax(
+    {                        
+      type: "POST",                 
+      url: "<?php echo $this->url->get('reservar/crear')?>",                     
+      data: $("#reser-form").serialize(), 
+      success: function(data)             
+      {
+        if(data == 1)
+        {
+          alert('se realizo la reservacion correctamente');
+          location.href = "<?php echo $this->url->get('reservar')?>";
+        }
+        else
+        {
+          alert(data);
+        }              
+      }
+    });
+  }
+  else
+  {
+    alert("Faltan campos por llenar");
+  }
+}
+</script>

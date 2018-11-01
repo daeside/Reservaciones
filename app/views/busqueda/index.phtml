@@ -1,0 +1,106 @@
+<div class="row z-depth-1 grey lighten-5">
+  <form class="col s12" id="opn-cls-content">
+    <div class="row">
+      <h5 class="center-align">Busquedas</h5>
+    </div>
+    <div class="row center-align">
+      <input type="hidden" name="idrepor" id="idrepor">
+    </div>
+    <div id="tabla-buscar" class="table-wrapper">
+      <div class="col s12">
+        <table id="data-table-buscar">
+          <thead>
+            <tr>
+              <th>NUMERO DE<br> RESERVA</th>
+              <th>RESTAURANTE</th>
+              <th>HORA DE<br> RESERVA</th>
+              <th>FECHA <br>RESERVADA</th>
+              <th>MESA</th>
+              <th>CAPACIDAD</th>
+              <th>HABITACION</th>
+              <th>NOMBRE DE<br>HUESPED</th>
+              <th>NOTAS</th>
+              <th>TICKET</th>
+              <th>CANCELAR</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>NUMERO DE<br> RESERVA</th>
+              <th>RESTAURANTE</th>
+              <th>HORA DE<br> RESERVA</th>
+              <th>FECHA <br>RESERVADA</th>
+              <th>MESA</th>
+              <th>CAPACIDAD</th>
+              <th>HABITACION</th>
+              <th>NOMBRE DE<br>HUESPED</th>
+              <th>NOTAS</th>
+              <th>TICKET</th>
+              <th>CANCELAR</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+  $(document).ready(function()
+  {
+    $('#data-table-cierre').dataTable().fnDestroy();
+    var datos = [{"data":"reserva"}, {"data":"restaurante"},{"data":"hora"},{"data":"fecha"},{"data":"id"},{"data":"capacidad"},{"data":"cuarto"},{"data":"nombre"},{"data":"notas"}, {"data":"imprimir"}, {"data":"cancelar"}];
+    tabla("<?php echo $this->url->get('busqueda/crearBusqueda')?>", "data-table-buscar", "<?php echo $this->url->get('json/Spanish.json')?>", datos);
+  });
+</script>
+<script>
+function imprimir(id)
+{
+   event.preventDefault();
+   $('#idrepor').attr('value', id);
+   iderepor = $('#idrepor').val();
+
+  $.ajax(
+  {
+    type: "POST",
+    url: "<?php echo $this->url->get('ticket/numero')?>", 
+    data: {iderepor: iderepor},
+    success: function(response)
+    {
+      window.open("<?php echo $this->url->get('ticket/index/')?>" + response);
+    }
+  });
+}
+</script>
+<script>
+function cancela(id)
+{
+  event.preventDefault();
+  var mensaje = confirm("¿Esta seguro de eliminar esta reservacion?");
+
+  if (mensaje)
+  {
+    $.ajax(
+    {
+      type: "POST",
+      url: "<?php echo $this->url->get('reservar/cancelar')?>", 
+      data: {id: id},
+      success: function(response)
+      {
+        if(response == 1)
+        {
+          alert('Se cancelo la reservacion correctamente');
+          location.href = "<?php echo $this->url->get('busqueda')?>";
+        }
+        else
+        {
+          alert(response);
+        }
+      }
+    });
+  }
+}
+</script>
+
+
